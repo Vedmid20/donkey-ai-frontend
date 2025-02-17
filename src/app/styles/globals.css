@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*{
+  padding: 0;
+  margin: 0;
+  color: white;
+}
+
+label{
+  margin-top: 1rem;
+}
+
+
+.input{
+  border-radius: 2rem;
+  padding: .5rem;
+  width: 15rem;
+  outline: none;
+  transition: all .2s ease-out;
+  color: black;
+}
+
+.input:focus{
+  transform: scale(1.03);
+}
+
+.submit{
+  padding: .5rem;
+  width: 15rem;
+  transition: all .2s ease;
+}
+
+.submit:hover{
+  transform: scale(.9)
+}
