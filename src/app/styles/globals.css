@@ -15,9 +15,9 @@ label{
 
 
 .input{
-  border-radius: 2rem;
+  border-radius: 1rem;
   padding: .5rem;
-  width: 15rem;
+  width: 20rem;
   outline: none;
   transition: all .2s ease-out;
   color: black;
@@ -31,6 +31,7 @@ label{
   padding: .5rem;
   width: 15rem;
   transition: all .2s ease;
+
 }
 
 .submit:hover{

@@ -71,8 +71,6 @@ const SignUpPage = () => {
 
   const onSubmit = async (data: { email: string; password: string; username: string }) => {
     await checkUserAvailability(data.email, data.username);
-
-    // Перевірка на наявність помилок перед відправкою
     if (Object.keys(errors).length > 0) {
       return;
     }
@@ -80,7 +78,6 @@ const SignUpPage = () => {
     try {
       await axios.post('http://127.0.0.1:8008/api/v1/users/', data);
       alert('Signup successful!');
-      // Перенаправлення на сторінку входу після успішної реєстрації
       router.push('/log-in');
     } catch (error) {
       setSignUpError('Something went wrong during signup.');
@@ -106,72 +103,76 @@ const SignUpPage = () => {
   };
 
   return (
-    <main className='bg-bg w-screen h-screen'>
-        <title>Sign Up</title>
+    <main className='bg-bg w-screen h-screen flex items-center justify-center'>
+      <title>Sign Up</title>
       <div className="container mx-auto p-4">
         <div className="flex justify-center">
-          <form className='flex-col justify-center items-center mt-10 border border-light p-20 rounded-lg px-32'  onSubmit={(e) => {
-            e.preventDefault();
-            handleSubmit(onSubmit)();
-          }}>
+          <div className=""></div>
+          <form
+            className='flex flex-col bg-gray justify-center items-center mt-10  p-8 rounded-lg shadow-lg w-full max-w-md'
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSubmit(onSubmit)();
+            }}
+          >
             <h1 className='text-5xl text-center mb-7'>Sign Up</h1>
-
-            <div className="form-group">
-              <label htmlFor="username" className='flex'>Username<p className='text-red-400'>*</p></label>
+  
+            <div className="form-group mb-4">
+              <label htmlFor="username" className='flex mb-1'>Username <p className='text-red-400'>*</p></label>
               <input
                 id="username"
                 type="text"
-                className='input'
+                className='input w-full p-2 border border-gray-300'
                 {...register('username', { required: 'Required' })}
                 placeholder="Enter your username"
               />
-              {errors.username && <p className="error">{errors.username.message}</p>}
+              {errors.username && <p className="error text-red-500">{errors.username.message}</p>}
             </div>
-
-            <div className="form-group">
-              <label htmlFor="email" className='flex'>Email<p className='text-red-400'>*</p></label>
+  
+            <div className="form-group mb-4">
+              <label htmlFor="email" className='flex mb-1'>Email <p className='text-red-400'>*</p></label>
               <input
                 id="email"
                 type="email"
-                className='input'
+                className='input w-full p-2 border border-gray-300'
                 {...register('email', { required: 'Required' })}
                 placeholder="Enter your email"
               />
-              {errors.email && <p className="error">{errors.email.message}</p>}
+              {errors.email && <p className="error text-red-500">{errors.email.message}</p>}
             </div>
-
-            <div className="form-group">
-              <label htmlFor="password" className='flex'>Password<p className='text-red-400'>*</p></label>
+  
+            <div className="form-group mb-4">
+              <label htmlFor="password" className='flex mb-1'>Password <p className='text-red-400'>*</p></label>
               <input
                 id="password"
                 type="password"
-                className='input'
+                className='input w-full p-2 border border-gray-300'
                 {...register('password', { required: 'Required' })}
                 placeholder="Enter your password"
                 value={password}
                 onChange={handlePasswordChange}
               />
-              {errors.password && <p className="error">{errors.password.message}</p>}
-
-              <div className="password-strength">
+              {errors.password && <p className="error text-red-500">{errors.password.message}</p>}
+  
+              <div className="password-strength mt-2">
                 <div
-                  className="strength-bar"
+                  className="strength-bar h-2 rounded"
                   style={{
                     width: `${(passwordStrength / 4) * 100}%`,
                     backgroundColor: getStrengthColor(passwordStrength),
                   }}
                 ></div>
-              </div>
-              <div className="strength-text">
-                {strengthLevels[passwordStrength]}
+                <div className="strength-text text-sm mt-1">
+                  {strengthLevels[passwordStrength]}
+                </div>
               </div>
             </div>
-
-            <button className='submit bg-light mt-5' type="submit">Continue</button>
-
-            {signUpError && <p className="error">{signUpError}</p>}
-
-            <h5>Already have an account? <Link href="/log-in" className="link">Log In</Link></h5>
+  
+            <button className='submit bg-light text-white py-2 px-4 rounded hover:bg-dark transition duration-200' type="submit">Continue</button>
+  
+            {signUpError && <p className="error text-red-500 mt-4">{signUpError}</p>}
+  
+            <h5 className="mt-4">Already have an account? <Link href="/log-in" className="link text-blue-500 hover:underline">Log In</Link></h5>
           </form>
         </div>
       </div>
