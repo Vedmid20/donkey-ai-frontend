@@ -90,13 +90,13 @@ const SignUpPage = () => {
   const getStrengthColor = (strength: number) => {
     switch (strength) {
       case 1:
-        return '#9f88cb';
+        return '#e8464e';
       case 2:
-        return '#9275c8';
+        return '#e89c46';
       case 3:
-        return '#8b68cd';
+        return '#eddf5c';
       case 4:
-        return '#7b4fcd';
+        return '#81d672';
       default:
         return 'grey';
     }

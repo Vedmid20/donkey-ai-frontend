@@ -35,5 +35,11 @@ label{
 }
 
 .submit:hover{
-  transform: scale(.9)
+  transform: scale(1.1)
+}
+
+.strength-bar {
+  height: .2rem;
+  border-radius: 10px;
+  transition: width 0.3s ease;
 }
