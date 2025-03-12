@@ -168,7 +168,7 @@ const SignUpPage = () => {
               </div>
             </div>
   
-            <button className='submit bg-light text-white py-2 px-4 rounded hover:bg-dark transition duration-200' type="submit">Continue</button>
+            <button className='submit bg-light text-white py-2 px-4 rounded hover:bg-dark transition duration-200 w-[15rem]' type="submit">Continue</button>
   
             {signUpError && <p className="error text-red-500 mt-4">{signUpError}</p>}
   
