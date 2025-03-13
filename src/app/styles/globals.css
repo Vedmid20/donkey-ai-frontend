@@ -9,6 +9,10 @@
   color: white;
 }
 
+body{
+  background-color: #1A1A1D;
+}
+
 label{
   margin-top: 1rem;
 }
