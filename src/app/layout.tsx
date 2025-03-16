@@ -3,6 +3,7 @@
 import React from 'react';
 import './styles/globals.css';
 import { SessionProvider } from "next-auth/react";
+import Sidebar from "@/app/_components/Sidebar";
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -13,6 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <title>My App</title>
       </head>
       <body>
+          <Sidebar />
         <SessionProvider session={null}>
           {children}
         </SessionProvider>
