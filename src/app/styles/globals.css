@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Barriecito&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -64,4 +66,8 @@ textarea::-webkit-scrollbar-track {
 
 textarea::-webkit-scrollbar-thumb:hover {
   background-color: #6b7280;
+}
+
+.logo{
+  font-family: "Barriecito", system-ui;
 }

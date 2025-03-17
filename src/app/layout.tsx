@@ -15,9 +15,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
           <Sidebar />
-        <SessionProvider session={null}>
-          {children}
-        </SessionProvider>
+          <div className="ml-32">
+            <SessionProvider session={null}>
+              {children}
+            </SessionProvider>
+          </div>
       </body>
     </html>
   );

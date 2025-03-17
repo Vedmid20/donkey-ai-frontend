@@ -2,15 +2,18 @@
 
 import { FC, useState, useEffect, useRef } from 'react';
 import axios from 'axios';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { ArrowUp } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import UnknownChat from "@/app/_components/UnknownChat";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import logo from '@/app/_public/logo1.png';
 
 const Chat: FC = () => {
   const [prompt, setPrompt] = useState('');
   const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState<{ sender: string, content: string, timestamp: string }[]>([]);
+  const [history, setHistory] = useState<{ sender: string, content: string, timestamp: string, loading?: boolean }[]>([]);
   const [chats, setChats] = useState<any[]>([]);
   const [chatExists, setChatExists] = useState<boolean>(false);
   const [ws, setWs] = useState<WebSocket | null>(null);
@@ -20,6 +23,7 @@ const Chat: FC = () => {
   const pathname = usePathname();
   const token = typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
   const chatId = pathname.slice(6);
+  const router = useRouter();
 
   useEffect(() => {
     if (token) {
@@ -52,7 +56,7 @@ const Chat: FC = () => {
 
   useEffect(() => {
     if (chatEndRef.current) {
-      chatEndRef.current.scrollIntoView({ behavior: "smooth" });
+      chatEndRef.current.scrollIntoView({ behavior: "instant" });
     }
   }, [history]);
 
@@ -74,7 +78,11 @@ const Chat: FC = () => {
     socket.onopen = () => console.log('WebSocket connected');
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      setHistory((prev) => [...prev, { sender: 'AI', content: data.response, timestamp: new Date().toISOString() }]);
+      setHistory((prev) =>
+        prev.map((msg) =>
+          msg.loading ? { ...msg, content: data.response, loading: false } : msg
+        )
+      );
     };
     socket.onclose = () => console.log('WebSocket disconnected');
     socket.onerror = (error) => console.error('WebSocket error:', error);
@@ -87,26 +95,31 @@ const Chat: FC = () => {
 
     const newMessage = { sender: 'User', content: prompt, timestamp: new Date().toISOString() };
     setHistory((prev) => [...prev, newMessage]);
-    console.log(newMessage)
+
+    setHistory((prev) => [
+      ...prev,
+      { sender: 'AI', content: '', timestamp: new Date().toISOString(), loading: true }
+    ]);
+
     sendOllamaRequest(prompt);
     setPrompt('');
   };
 
   const sendOllamaRequest = async (prompt: string) => {
-    setLoading(true);
     try {
       if (!token) return;
-
       const res = await axios.post('http://127.0.0.1:8008/api/v1/response/', { prompt }, {
         headers: { Authorization: `Bearer ${token}` },
         params: { chat_id: chatId }
       });
-      console.log(res.data)
-      setHistory((prev) => [...prev, { sender: 'AI', content: res.data.response, timestamp: new Date().toISOString() }]);
+
+      setHistory((prev) =>
+        prev.map((msg) =>
+          msg.loading ? { ...msg, content: res.data.response, loading: false } : msg
+        )
+      );
     } catch (error) {
       console.error('Error fetching response:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -140,14 +153,20 @@ const Chat: FC = () => {
               <div className={`message-bubble p-3 max-w-lg rounded-lg ${
                 msg.sender === 'User' ? 'bg-light text-white rounded-br-none' : 'bg-white/5 text-black'
               }`}>
-                <p className="whitespace-pre-line">{msg.content}</p>
+                {msg.loading ? (
+                  <img src={logo.src} alt="Loading..." className="w-10 h-10 animate-pulse" />
+                ) : (
+                  <h5 className="whitespace-pre-line font-extralight">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{msg.content}</ReactMarkdown>
+                  </h5>
+                )}
               </div>
             </div>
           ))}
           <div ref={chatEndRef}></div>
         </div>
       </div>
-      <div className="w-full max-w-3xl flex items-center fixed bottom-0 bg-bg h-[5.4rem]">
+      <div className="w-full max-w-3xl flex items-center fixed bottom-0 bg-bg h-[5.4rem] z-10">
         <div className="w-full max-w-3xl flex gap-3 items-center p-2 px-10 border border-light/50 fixed bottom-0 rounded-3xl bg-gray mb-7 shadow-light/15 shadow-lg">
           <textarea
             ref={textareaRef}
@@ -155,14 +174,10 @@ const Chat: FC = () => {
             className="flex-1 text-white outline-none bg-transparent focus:transform-none resize-none overflow-auto max-h-40 h-auto scrollbar-thin transition-all"
             value={prompt}
             onChange={handleTextChange}
-            rows={1}
-          />
+            rows={1}/>
           <button type='submit' onClick={handleSubmit} className="submit bg-light text-white py-2 px-4 rounded-full hover:bg-dark transition-all duration-200 w-10">
             <ArrowUp />
           </button>
-        </div>
-        <div className="mt-14 mx-auto">
-          <p className="text-xs text-white/25">Donkey AI can make mistakes, because he's donkey</p>
         </div>
       </div>
     </main>
