@@ -67,6 +67,7 @@ const Sidebar: FC = () => {
                 });
                 setChats(chats.filter(chat => chat.id !== chatToDelete));
                 setShowModal(false);
+                router.push('/')
             } catch (error) {
                 console.error("Error deleting chat:", error);
             }
